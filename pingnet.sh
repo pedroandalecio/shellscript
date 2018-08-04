@@ -1,42 +1,35 @@
 #!/bin/bash
 
-# Este script usa o protocolo ICMP para se comunicar com todos os nodes
-# da rede, use somente redes de classe C, não utilize subredes!
+# This script use ICMP protocol for communicate in all nodes of the net
+# work, use only C class networks, not use subnets, this is a simple ex
+# ample for use the conditional structures (if, else) and an a (for) lo
+# op in Shell Script lessons. 
 
-# Limpa a shell para execução do script
+# Este script usa o protocolo ICMP para se comunicar com todos os nodes
+# da rede, use somente redes de classe C, não use subredes, isto é um s
+# imples exemplo de utilizacão pa ra a estrutura condicional (if, else)
+# e um loop (for) em aulas de Shell Script.
+
 clear
 
-# Cria uma variável com path para um arquivo temporário
-spawn='/tmp/NET'
-# Pede a inserção da rede a ser avaliada pelo usuario
-echo -e "\nEntre com a rede: Ex.:192.168.1.0/24"
-read addr
+SPAWN='/tmp/NET'
+echo -e "\nInput the network: Ex.: 192.168.1.0/24"
+read ADDR
 
+> $SPAWN
+echo $ADDR > $SPAWN
 
-# Cria um arquivo temporários
-> $spawn
+NET=`awk -F. '{print $3}' $SPAWN`
+ROUT=`ip r | grep $( cat $SPAWN) | cut -d' ' -f1`
 
-# Envia a rede a ser avaliada para um arquivo temporário
-echo $addr > $spawn
-
-# Pega a rede informada
-net=`awk -F. '{print $3}' $spawn`
-
-# Pega a rota da rede informada
-rota=`ip r | grep $(cat $spawn) | awk -F" " '{print $9}'`
-
-echo $rot
-
-# Codigo de teste de rede
-if [ "$rota" == '' ]
+if [ "$ROUT" == '' ]
     then
-        echo -e "\nEste node nao possui uma rota para $addr\n"
+        echo -e "\nThis node not have a route to $ADDR\n"
 	exit
     else
-        echo -e "\nLista de hosts respondendo ao ICMP na rede:"
-        for ip in `seq 1 254`
-            do
-               ping -c 192.168.$net.$ip | grep 'ttl=64' | cut -d' ' -f4 | sed -e s'|:||g'
-        done
+	echo -e "\nList of active hosts for ICMP:"
+        for IP in `seq 1 254`
+	    do
+	        ping -c 1 192.168.$NET.$IP | grep 'ttl=64' | cut -d' ' -f4 | sed -e s'|.$||'
+	done
 fi
-     	      

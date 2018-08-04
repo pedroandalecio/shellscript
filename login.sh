@@ -10,7 +10,7 @@ USER=`w | awk -F" " '{print $1}' | grep $NOME | uniq`
 
 until $USER &>> /dev/null
     do
-        HORA=`date | cut -d' ' -f4`
+        HORA=`date | awk -F" " '{print $4}'`
         echo "User $USER connected - $HORA"
         sleep 1.0
         USER=`w | awk -F" " '{print $1}' | grep $NOME | uniq`
