@@ -14,4 +14,4 @@ while ping -c1 $IPHOST &>> /dev/null
         echo "ICMP $COUNT – Host $IPHOST ICMP ON"
         sleep 1.0
         let COUNT++
-done
+    done
